@@ -1,0 +1,35 @@
+import smtplib
+from email.message import EmailMessage
+from getpass import getpass
+
+
+def send_email(sender_email, app_password, receiver_email, subject, body):
+    message = EmailMessage()
+    message["From"] = sender_email
+    message["To"] = receiver_email
+    message["Subject"] = subject
+    message.set_content(body)
+
+    try:
+        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+            server.login(sender_email, app_password)
+            server.send_message(message)
+
+        print("Email sent successfully!")
+
+    except smtplib.SMTPAuthenticationError:
+        print("Login failed. Check your email and App Password.")
+
+    except Exception as error:
+        print("Error:", error)
+
+
+# Get email details
+sender = input("Enter your Gmail address: ")
+password = getpass("Enter your Gmail App Password: ")
+receiver = input("Enter receiver's email address: ")
+subject = input("Enter email subject: ")
+body = input("Enter your message: ")
+
+# Send email
+send_email(sender, password, receiver, subject, body)
